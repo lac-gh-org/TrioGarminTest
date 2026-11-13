@@ -68,4 +68,4 @@
 	branch = smartwatch-manager-review
 [submodule "GarminSmartwatchKit"]
 	path = GarminSmartwatchKit
-	url = https://github.com/dabear/GarminSmartwatchKit.git
+	url = https://github.com/lac-gh-org/GarminSmartwatchKit.git
