@@ -243,15 +243,16 @@ final class BaseSmartwatchHost: SmartwatchHost, Injectable {
             }
             .store(in: &subscriptions)
 
-        // Also covers readings deleted or entered by hand.
-        CoreDataStack.shared.entityChangePublisher
+        // Also covers readings deleted or entered by hand. Content changes only, as the
+        // Apple Watch manager: upload flags change nothing the watch shows.
+        CoreDataStack.shared.contentChangePublisher
             .receive(on: coreDataQueue)
             .filteredByEntityName("GlucoseStored")
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in MainActor.assumeIsolated { self?.signal(.glucose) } }
             .store(in: &subscriptions)
 
-        CoreDataStack.shared.entityChangePublisher
+        CoreDataStack.shared.contentChangePublisher
             .receive(on: coreDataQueue)
             .filteredByEntityName("OrefDetermination")
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
@@ -284,7 +285,7 @@ final class BaseSmartwatchHost: SmartwatchHost, Injectable {
             .store(in: &subscriptions)
 
         for entity in ["OverrideStored", "TempTargetStored"] {
-            CoreDataStack.shared.entityChangePublisher
+            CoreDataStack.shared.contentChangePublisher
                 .receive(on: coreDataQueue)
                 .filteredByEntityName(entity)
                 .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
